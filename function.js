@@ -10,9 +10,6 @@ const mime = require('mime-types');
 const nodemailer = require('nodemailer')
 const unzipper = require('unzipper');
 
-
-
-
 async function executeQueries(queries, connection) {
     try {
         for (const query of queries) {

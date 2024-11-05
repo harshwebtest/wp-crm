@@ -6,9 +6,6 @@ const { sign } = require('jsonwebtoken');
 const randomstring = require('randomstring');
 const validateUser = require('../middlewares/user.js');
 
-
-
-
 router.post('/signup', async (req, res) => {
     try {
 
@@ -52,8 +49,6 @@ router.post('/signup', async (req, res) => {
     }
 })
 
-
-
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body
@@ -83,7 +78,6 @@ router.post('/login', async (req, res) => {
     }
 })
 
-
 router.get('/get_me', validateUser, async (req, res) => {
     try {
         const data = await query(`SELECT * FROM user WHERE uid = ?`, [req.decode.uid])
@@ -98,9 +92,6 @@ router.get('/get_me', validateUser, async (req, res) => {
     }
 })
 
-
-// update notes 
-
 router.post("/save_note", validateUser,  async (req, res) => {
     try {
         const { chatId, note } = req.body
@@ -112,8 +103,6 @@ router.post("/save_note", validateUser,  async (req, res) => {
         console.log(err)
     }
 })
-
-
 
 router.get('/generate_api_keys', validateUser, async (req, res) => {
     try {      
@@ -130,8 +119,6 @@ router.get('/generate_api_keys', validateUser, async (req, res) => {
         res.json({ msg: "Something went wrong", err, success: false })
     }
 })
-
-
 
 router.post('/update_meta', validateUser, async (req, res) => {
     try {
@@ -168,8 +155,29 @@ router.post('/update_meta', validateUser, async (req, res) => {
     }
 })
 
-                                                                                                                                                     
+router.post('/add_meta_templet', validateUser, async (req, res) => {
+    try {
+        console.log(JSON.stringify(req.body))
 
+        const getAPIKEYS = await query(`SELECT * FROM meta_api WHERE uid = ?`, [req.decode.uid])
 
+        if (getAPIKEYS.length < 1) {
+            return res.json({ success: false, msg: "Please fill your meta API keys" })
+        }
+
+        const resp = await createMetaTemplet("v18.0", getAPIKEYS[0]?.waba_id, getAPIKEYS[0]?.access_token, req.body)
+
+        if (resp.error) {
+            res.json({ msg: resp?.error?.error_user_msg || resp?.error?.message })
+        } else {
+            console.log(resp)
+            res.json({ msg: "Templet was added and waiting for the review", success: true })
+        }
+                        
+    } catch (err) {
+        res.json({ success: false, msg: "something went wrong", err })
+        console.log(err)
+    }
+})                                                                                                                                                   
 
 module.exports = router
