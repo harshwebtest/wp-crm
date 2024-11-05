@@ -15,13 +15,18 @@ const userRoute = require('./routes/user')
 app.use('/api/user', userRoute)
 
 const apiRoute = require('./routes/apiv1')
-app.use('/api/v1', apiRoute)
+app.use('/api/v1/apiv1', apiRoute)
+
+const phonebookRoute = require('./routes/phonebook')
+app.use('/api/v1/phonebook', phonebookRoute)
+
+const broadcastRoute = require('./routes/broadcast')
+app.use('/api/v1/broadcast', broadcastRoute)
 
 
-
-
+// webhooks for getting messages
 app.get('/webhook', (req, res) => {
-    const VERIFY_TOKEN = "ABC123"; // Use the same token you entered in the Verify token field
+    const VERIFY_TOKEN = process.env.WEBHOOK_KEY ;
     
     const mode = req.query['hub.mode'];
     const token = req.query['hub.verify_token'];
@@ -62,7 +67,7 @@ app.post('/webhook', async (req, res) => {
     }
     res.status(200).end();
 });
-
+// webhooks end
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
