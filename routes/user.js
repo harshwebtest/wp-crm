@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const { query } = require('../database/dbpromises.js')
-const { isValidEmail, getBusinessPhoneNumber } = require('../function.js')
+const { isValidEmail, getBusinessPhoneNumber, createMetaTemplet } = require('../function.js')
 const bcrypt = require('bcrypt');
 const { sign } = require('jsonwebtoken');
 const randomstring = require('randomstring');
